@@ -15,7 +15,7 @@ class Hero:
         return self.name
 
     def __str__(self):
-        return "{} {} has health {} and mana {}".format(self.
+        return "{} {} has health {} and mana {}".format(self.name, self.title, self.curr_health, self.curr_mana)
 
     def known_as(self):
         return "{} {}".format(self.name, self.title)
