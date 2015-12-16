@@ -11,7 +11,13 @@ class HeroTest(unittest.TestCase):
         self.spell = Spell("Abracadabra", 35, 40, 11)
 
     def test_init(self):
-        self.assertEqual()
+        self.assertEqual(str(self.hero), "Batman Superman has health 200 and mana 105")
+
+    def test_known_as(self):
+        self.assertEqual(self.hero.known_as(), "Batman Superman")
+
+    def test_get_health(self):
+        self.assertEqual(self.hero.get_health(), 
 
 if __name__ == '__main__':
     unittest.main()
