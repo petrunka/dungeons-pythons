@@ -48,9 +48,14 @@ class Dungeon:
         self.map[el].remove(self.map[el][0])
         self.map[el].append(new_position)
 
+    def move_left(self, el, current_row, index):
+        new_position = current_row[:index-1] + 'H' + '.' + current_row[index+1:]
+        self.map[el].remove(self.map[el][0])
+        self.map[el].append(new_position)
+
     def check_move(self, move, el, current_row, index):
         if move == "right":
-            if index < len(current_row):
+            if index < len(current_row)-1:
                 current_point = self.map[el][0][index+1]
                 if current_point == '.':
                     self.move_right(el, current_row, index)
@@ -63,14 +68,33 @@ class Dungeon:
                 if current_point == 'G':
                     pass
             return False
+        if move == 'left':
+            if index >= 1 and index<len(current_row):
+                current_point = self.map[el][0][index-1]
+                if current_point == '.':
+                    self.move_right(el, current_row, index)
+                if current_point == 'E':
+                    pass
+                if current_point == 'T':
+                    pass
+                if current_point == '#':
+                    return False
+                if current_point == 'G':
+                    pass
+            return False
+        
+            
 
     def move_hero(self, direction):
         el = self.find_coordinates()[0]
         current_row = (self.map[el][0])
         index = self.find_coordinates()[1]
         if direction == "right":
-            self.check_move("right", el, current_row, index)
-            self.move_right(el, current_row, index)
+            if self.check_move("right", el, current_row, index) == True:
+                self.move_right(el, current_row, index)
+        if direction == "left":
+            if self.check_move("left", el, current_row, index) == True:
+                self.move_left(el, current_row, index)
 
 
 def main():
@@ -80,8 +104,11 @@ def main():
     hero = Hero("Bron", "Dragonslayer", 100, 100, 2)
     d.spawn(hero)
     d.print_map()
-    d.move_hero("right")
+    d.move_hero("left")
     d.print_map()
+    d.move_hero("left")
+    d.print_map()
+    
 
 if __name__ == '__main__':
     main()

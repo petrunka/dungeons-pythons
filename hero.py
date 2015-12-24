@@ -10,6 +10,7 @@ class Hero:
         self.curr_mana = mana
         self.max_mana = mana
         self.mana_regeneration_rate = mana_regeneration_rate
+        
 
     def get_name(self):
         return self.name
@@ -25,6 +26,9 @@ class Hero:
 
     def get_mana(self):
         return self.mana
+
+    def set_position(self):
+        pass
 
     def is_alive(self):
         if self.health > 0:

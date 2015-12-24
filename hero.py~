@@ -1,4 +1,5 @@
 from weapon import Weapon
+from spell import Spell
 class Hero:
     def __init__(self, name, title, max_health, mana, mana_regeneration_rate):
         self.name = name
@@ -9,6 +10,13 @@ class Hero:
         self.curr_mana = mana
         self.max_mana = mana
         self.mana_regeneration_rate = mana_regeneration_rate
+        
+
+    def get_name(self):
+        return self.name
+
+    def __str__(self):
+        return "{} {} has health {} and mana {}".format(self.name, self.title, self.curr_health, self.curr_mana)
 
     def known_as(self):
         return "{} {}".format(self.name, self.title)
@@ -18,6 +26,8 @@ class Hero:
 
     def get_mana(self):
         return self.mana
+
+    def set_position
 
     def is_alive(self):
         if self.health > 0:
