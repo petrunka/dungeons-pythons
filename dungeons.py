@@ -82,6 +82,7 @@ def main():
     d.print_map()
     d.move_hero("right")
     d.print_map()
+    print("helooooooooo")
 
 if __name__ == '__main__':
     main()
