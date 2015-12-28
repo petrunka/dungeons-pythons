@@ -1,4 +1,6 @@
 from hero import Hero
+from treasures import Treasures
+
 
 class Dungeon:
 
@@ -8,9 +10,7 @@ class Dungeon:
 
     def open_map(self):
         data = open(self.map_name, 'r')
-        new_data = []
-        new_data = [line.split() for line in data]
-        for i in new_data:
+        for i in [line.split() for line in data]:
             self.map.append(i)
         data.close()
 
@@ -25,7 +25,7 @@ class Dungeon:
                             new_i = el[i].replace('S', 'H')
                             el.remove(row)
                             el.append(new_i)
-
+                            return True
         # if not hero.is_alive():
         #     flag = 0
         #     for el in self.map:
@@ -33,14 +33,15 @@ class Dungeon:
         #             if el[i] == 'S' and flag == 0:
         #                 el[i] = 'H'
         #                 flag = 1
+        return False
 
     def find_coordinates(self):
-        for el in self.map:
-            for i in range(0, len(el)):
-                if 'H' in el[i]:
+        for row in self.map:
+            for i in range(0, len(row)):
+                if 'H' in row[i]:
                     list_coordinates = []
-                    list_coordinates.append(self.map.index(el))
-                    list_coordinates.append(el[i].index('H'))
+                    list_coordinates.append(self.map.index(row))
+                    list_coordinates.append(row[i].index('H'))
                     return list_coordinates
 
     def move_right(self, el, current_row, index):
@@ -48,29 +49,83 @@ class Dungeon:
         self.map[el].remove(self.map[el][0])
         self.map[el].append(new_position)
 
+    def move_left(self, el, current_row, index):
+        new_position = current_row[:index-1] + 'H' + '.' + current_row[index+1:]
+        self.map[el].remove(self.map[el][0])
+        self.map[el].append(new_position)
+
+    def move_up(self, el, current_row, index):
+        new_row = self.map[el - 1]
+        self.replace(current_row, el, index, new_row)
+
+    def move_down(self, el, current_row, index):
+        new_row = self.map[el + 1]
+        self.replace(current_row, el, index, new_row)
+
+    def replace(self, current_row, el, index, new_row):
+        new_position = new_row[0][:index] + 'H' + new_row[0][index+1:]
+        new_row.append(new_position)
+        new_row.remove(new_row[0])
+        reload_poins = current_row.replace('H', '.')
+        self.map[el].append(reload_poins)
+        self.map[el].remove(current_row)
+
+    def cases(self, current_point):
+        if current_point == '.':
+            return True
+        if current_point == 'E':
+            pass
+        if current_point == 'T':
+            print(Treasures.pick_treasure())
+            return True
+        if current_point == '#':
+            return False
+        if current_point == 'G':
+            print("End of dungeon!!!")
+
     def check_move(self, move, el, current_row, index):
-        if move == "right":
-            if index < len(current_row):
+        if move == 'right':
+            if index < len(current_row)-1:
                 current_point = self.map[el][0][index+1]
-                if current_point == '.':
-                    self.move_right(el, current_row, index)
-                if current_point == 'E':
-                    pass
-                if current_point == 'T':
-                    pass
-                if current_point == '#':
-                    return False
-                if current_point == 'G':
-                    pass
+                return(self.cases(current_point))
+            return False
+        if move == 'left':
+            if index >= 1 and index < len(current_row):
+                current_point = self.map[el][0][index-1]
+                return(self.cases(current_point))
+            return False
+        if move == 'up':
+            if index >= 0:
+                current_point = self.map[el - 1][0][index]
+                return(self.cases(current_point))
+            return False
+        if move == 'down':
+            if index < len(self.map):
+                current_point = self.map[el + 1][0][index]
+                return(self.cases(current_point))
             return False
 
     def move_hero(self, direction):
         el = self.find_coordinates()[0]
         current_row = (self.map[el][0])
         index = self.find_coordinates()[1]
-        if direction == "right":
-            self.check_move("right", el, current_row, index)
-            self.move_right(el, current_row, index)
+        if direction == 'right':
+            if self.check_move('right', el, current_row, index):
+                self.move_right(el, current_row, index)
+                return True
+        if direction == 'left':
+            if self.check_move('left', el, current_row, index):
+                self.move_left(el, current_row, index)
+                return True
+        if direction == 'up':
+            if self.check_move('up', el, current_row, index):
+                self.move_up(el, current_row, index)
+                return True
+        if direction == 'down':
+            if self.check_move('down', el, current_row, index):
+                self.move_down(el, current_row, index)
+                return True
+        return False
 
 
 def main():
@@ -80,9 +135,18 @@ def main():
     hero = Hero("Bron", "Dragonslayer", 100, 100, 2)
     d.spawn(hero)
     d.print_map()
-    d.move_hero("right")
+    print(d.move_hero("right"))
     d.print_map()
-    print("helooooooooo")
+    # print(d.move_hero("right"))
+    # d.print_map()
+    # print(d.move_hero("left"))
+    # d.print_map()
+    print(d.move_hero("down"))
+    d.print_map()
+    print(d.move_hero("up"))
+    d.print_map()
+    print(d.move_hero("up"))
+    d.print_map()
 
 if __name__ == '__main__':
     main()
