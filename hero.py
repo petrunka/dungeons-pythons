@@ -1,9 +1,9 @@
 class Hero:
-    def __init__(self, name, title, max_health, mana, mana_regeneration_rate):
+    def __init__(self, name, title, health, mana, mana_regeneration_rate):
         self.name = name
         self.title = title
-        self.max_health = max_health
-        self.curr_health = max_health
+        self.health = health
+        self.curr_health = health
         self.damage = 0
         self.curr_mana = mana
         self.max_mana = mana

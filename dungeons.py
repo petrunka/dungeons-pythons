@@ -1,5 +1,8 @@
 from hero import Hero
 from treasures import Treasures
+from spell import Spell
+from weapon import Weapon
+from enemy import Enemy
 
 
 class Dungeon:
@@ -127,26 +130,47 @@ class Dungeon:
                 return True
         return False
 
+    def hero_attack(self, by="spell"):
+        if Weapon.damage > Spell.damage:
+            Hero.damage = Weapon.damage
+        Spell.cast_range -= 1
+        Enemy.health -= Hero.damage
+
 
 def main():
-    d = Dungeon("map.txt")
-    d.open_map()
-    d.print_map()
-    hero = Hero("Bron", "Dragonslayer", 100, 100, 2)
-    d.spawn(hero)
-    d.print_map()
-    print(d.move_hero("right"))
-    d.print_map()
+    # d = Dungeon("map.txt")
+    # d.open_map()
+    # d.print_map()
+    # hero = Hero("Bron", "Dragonslayer", 100, 100, 2)
+    # d.spawn(hero)
+    # d.print_map()
     # print(d.move_hero("right"))
     # d.print_map()
-    # print(d.move_hero("left"))
+    # # print(d.move_hero("right"))
+    # # d.print_map()
+    # # print(d.move_hero("left"))
+    # # d.print_map()
+    # print(d.move_hero("down"))
     # d.print_map()
-    print(d.move_hero("down"))
-    d.print_map()
-    print(d.move_hero("up"))
-    d.print_map()
-    print(d.move_hero("up"))
-    d.print_map()
+    # print(d.move_hero("up"))
+    # d.print_map()
+    # print(d.move_hero("up"))
+    # d.print_map()
+    h = Hero("Bron", "Dragonslayer", 100, 100, 2)
+    w = Weapon("The Axe of Destiny", 20)
+    h.equip(w)
+    s = Spell("Fireball", 30, 50, 2)
+    h.learn(s)
+    map = Dungeon("map.txt")
+    map.open_map()
+    map.spawn(h)
+    map.print_map()
+    print(map.move_hero("right"))
+    print(map.move_hero("down"))
+    map.print_map()
+    e = Enemy(100, 100, 20)
+    map.hero_attack(by="spell")
+    print(e.health)
 
 if __name__ == '__main__':
     main()
