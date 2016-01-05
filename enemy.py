@@ -5,6 +5,12 @@ class Enemy:
         self.mana = mana
         self.damage = damage
 
+    def __str__(self):
+        return "Enemy with health {}, mana {} and damage {}".format(self.health, self.mana, self.damage)
+
+    def __repr__(self):
+        return self.__str__()
+
     def is_alive(self):
         if self.health == 0:
             raise "The Enemy died!!!"

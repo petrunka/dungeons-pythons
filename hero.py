@@ -8,12 +8,17 @@ class Hero:
         self.curr_mana = mana
         self.max_mana = mana
         self.mana_regeneration_rate = mana_regeneration_rate
+        self.spell = None
+        self.weapon = None
 
     def get_name(self):
         return self.name
 
     def __str__(self):
-        return "{} {} has health {} and mana {}".format(self.name, self.title, self.curr_health, self.curr_mana)
+        return "{} {} with health {}, mana {} and damage {}".format(self.name, self.title, self.curr_health, self.curr_mana, self.damage)
+
+    def __repr__(self):
+        return self.__str__()
 
     def known_as(self):
         return "{} {}".format(self.name, self.title)
@@ -60,10 +65,12 @@ class Hero:
             self.curr_mana += mana_points
 
     def equip(self, weapon):
-        self.damage += weapon.get_damage()
+        self.damage = weapon.get_damage()
+        self.weapon = weapon
 
     def learn(self, spell):
-        self.damage += spell.get_damage()
+        self.damage = spell.get_damage()
+        self.spell = spell
 
     def attack(self, by="weapon"):
         return "{}".format(by).get_damage()
