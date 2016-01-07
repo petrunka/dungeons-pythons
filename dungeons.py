@@ -1,8 +1,4 @@
-from hero import Hero
 from treasures import Treasures
-from spell import Spell
-from weapon import Weapon
-from enemy import Enemy
 
 
 class Dungeon:
@@ -10,10 +6,11 @@ class Dungeon:
     def __init__(self, map_name):
         self.map = []
         self.map_name = map_name
-        self.coords = []
-        self.hero = None
-        self.enemy_coords = []
-        self.enemy = None
+        self.coords = [0, 0]
+        # self.hero = None
+
+    def get_coords(self):
+        return self.coords
 
     def get_coords(self):
         return self.coords
@@ -37,35 +34,26 @@ class Dungeon:
         self.hero = hero
         for el in self.map:
             for i in range(0, len(el)):
-                        if 'S' in el[i]:
-                            row = el[i]
-                            new_i = row.replace('S', 'H')
-                            self.coords.append(i)
-                            self.coords.append(el[i].index("S"))
-                            el.remove(row)
-                            el.append(new_i)
-                            return True
-        if self.hero.health == 0:
-            self.respawn(self.hero)
-        return False
-
-    def respawn(self, hero):
-        self.hero = hero
-        for el in self.map:
-            for i in range(0, len(el)):
-                if 'H' in el[i]:
+                if 'S' in el[i]:
+                    row = el[i]
+                    new_i = el[i].replace('S', 'H')
                     self.coords.append(i)
-                    self.coords.append(el[i].index("H"))
-                    break
-        for j in range(self.coords[1], len(self.map)):
-            for k in range(self.coords[0], len(self.map[j])):
-                if '.' in self.map[j][k]:
-                    row = self.map[j][k]
-                    new_row = row.replace('.', 'H')
-                    self.map[j].remove(row)
-                    self.map[j].append(new_row)
+                    self.coords.append(el[i].index("S"))
+                    el.remove(row)
+                    el.append(new_i)
                     return True
         return False
+
+    def respawn(self):
+        for point in range(self.coords[1], len(self.map[self.coords[0]][0])):
+            if self.map[self.coords[0]][0][point] == ".":
+                row = self.map[self.coords[0]][0].replace("H", ".")
+                l = list(row)
+                l[point] = "H"
+                row = "".join(l)
+                self.map[self.coords[0]].remove(self.map[self.coords[0]][0])
+                self.map[self.coords[0]].append(row)
+                return "Hero respawned"
 
     def move_right(self, el, current_row, index):
         new_position = current_row[:index] + '.' + 'H' + current_row[index+2:]
@@ -140,7 +128,6 @@ class Dungeon:
 
     def move_hero(self, direction):
         el = self.coords[0]
-        print(el)
         current_row = (self.map[el][0])
         index = self.coords[1]
         if direction == 'right':
@@ -156,11 +143,11 @@ class Dungeon:
                 self.move_up(el, current_row, index)
                 return True
         if direction == 'down':
-            # print(el)
             if self.check_move('down', el, current_row, index):
                 self.move_down(el, current_row, index)
                 return True
         return False
+<<<<<<< HEAD
 
 
 def main():
@@ -181,3 +168,5 @@ def main():
 if __name__ == '__main__':
     main()
 
+=======
+>>>>>>> 3636551c1a01618945e8f0e05787da3ef65cf189
