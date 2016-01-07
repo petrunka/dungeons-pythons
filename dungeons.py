@@ -140,7 +140,7 @@ class Dungeon:
         {}".format(self.hero, self.enemy)
 
     def message_hero_cast(self):
-        return "Hero casts a {}, hits enemy for {}dmg.Enemy health is {} \
+        return "Hero casts a {}, hits enemy for {} dmg.Enemy health is {} \
         ".format(self.hero.spell.name, self.hero.spell.damage, self.enemy.health)
 
     def message_no_more_mana(self):
