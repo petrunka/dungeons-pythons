@@ -27,7 +27,13 @@ class Hero:
         return self.curr_health
 
     def get_mana(self):
-        return self.mana
+        return self.curr_mana
+
+    def get_weapon(self):
+        return self.weapon
+
+    def get_spell(self):
+        return self.spell
 
     def set_position(self):
         pass
@@ -67,6 +73,9 @@ class Hero:
     def equip(self, weapon):
         self.damage = weapon.get_damage()
         self.weapon = weapon
+
+    def get_damage(self):
+        return self.damage
 
     def learn(self, spell):
         self.damage = spell.get_damage()

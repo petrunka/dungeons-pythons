@@ -7,3 +7,12 @@ class Spell:
 
     def get_damage(self):
         return self.damage
+
+    def get_name(self):
+        return self.name
+
+    def get_mana_cost(self):
+        return self.mana_cost
+
+    def get_cast_range(self):
+        return self.cast_range

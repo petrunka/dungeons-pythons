@@ -5,3 +5,6 @@ class Weapon:
 
     def get_damage(self):
         return self.damage
+
+    def get_name(self):
+        return self.name

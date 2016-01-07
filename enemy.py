@@ -28,6 +28,9 @@ class Enemy:
 
     def get_mana(self):
         return self.mana
+    
+    def get_damage(self):
+        return self.damage
 
     def take_healing(self, healing_points):
         if self.is_alive():
