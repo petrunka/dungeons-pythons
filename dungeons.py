@@ -10,8 +10,9 @@ class Dungeon:
     def __init__(self, map_name):
         self.map = []
         self.map_name = map_name
-        # self.coords = []
+        self.coords = []
         self.hero = None
+        self.enemy_coords = []
         self.enemy = None
 
     def open_map(self):
@@ -30,37 +31,33 @@ class Dungeon:
                         if 'S' in el[i]:
                             row = el[i]
                             new_i = el[i].replace('S', 'H')
+                            self.coords.append(i)
+                            self.coords.append(el[i].index("S"))
                             el.remove(row)
                             el.append(new_i)
                             return True
-        # if not hero.is_alive():
-        #     flag = 0
-        #     for el in self.map:
-        #         for i in range(0, len(el)):
-        #             if el[i] == 'S' and flag == 0:
-        #                 el[i] = 'H'
-        #                 flag = 1
+        if self.hero.health == 0:
+            self.respawn()
         return False
 
-    def find_coordinates(self, letter):
-        for row in self.map:
-            for i in range(0, len(row)):
-                if letter in row[i]:
-                    list_coordinates = []
-                    list_coordinates.append(self.map.index(row))
-                    list_coordinates.append(row[i].index(letter))
-                    # self.coords = list_coordinates
-                    return list_coordinates
+    def respawn(self):
+        pass
 
     def move_right(self, el, current_row, index):
         new_position = current_row[:index] + '.' + 'H' + current_row[index+2:]
         self.map[el].remove(self.map[el][0])
         self.map[el].append(new_position)
+        self.coords = []
+        self.coords.append(el)
+        self.coords.append(new_position.index("H"))
 
     def move_left(self, el, current_row, index):
         new_position = current_row[:index-1] + 'H' + '.' + current_row[index+1:]
         self.map[el].remove(self.map[el][0])
         self.map[el].append(new_position)
+        self.coords = []
+        self.coords.append(el)
+        self.coords.append(new_position.index("H"))
 
     def move_up(self, el, current_row, index):
         new_row = self.map[el - 1]
@@ -77,6 +74,9 @@ class Dungeon:
         reload_poins = current_row.replace('H', '.')
         self.map[el].append(reload_poins)
         self.map[el].remove(current_row)
+        self.coords = []
+        self.coords.append(self.map.index(new_row))
+        self.coords.append(new_position.index("H"))
 
     def cases(self, current_point):
         if current_point == '.':
@@ -109,14 +109,16 @@ class Dungeon:
             return False
         if move == 'down':
             if index < len(self.map):
+                # print(el)
                 current_point = self.map[el + 1][0][index]
                 return(self.cases(current_point))
             return False
 
     def move_hero(self, direction):
-        el = self.find_coordinates('H')[0]
+        el = self.coords[0]
+        print(el)
         current_row = (self.map[el][0])
-        index = self.find_coordinates('H')[1]
+        index = self.coords[1]
         if direction == 'right':
             if self.check_move('right', el, current_row, index):
                 self.move_right(el, current_row, index)
@@ -130,97 +132,119 @@ class Dungeon:
                 self.move_up(el, current_row, index)
                 return True
         if direction == 'down':
+            # print(el)
             if self.check_move('down', el, current_row, index):
                 self.move_down(el, current_row, index)
                 return True
         return False
 
     def message_start_fight(self):
-        return "A fight is started between our {} and \
-        {}".format(self.hero, self.enemy)
+        return "A fight is started between our {} and {}".format(self.hero, self.enemy)
 
     def message_hero_cast(self):
         return "Hero casts a {}, hits enemy for {} dmg.Enemy health is {} \
         ".format(self.hero.spell.name, self.hero.spell.damage, self.enemy.health)
 
     def message_no_more_mana(self):
-        return "Hero does not have mana for another \
-         {}.".format(self.hero.spell.name)
+        return "Hero does not have mana for another {}.".format(self.hero.spell.name)
 
     def message_enemy_hit(self):
-        return "Enemy hits hero with {}dmg. Hero health \
-         is {}".format(self.enemy.damage, self.hero.health)
-
-    def give_moved_direction(self):
-        pass
+        return "Enemy hits hero with {}dmg. Hero health is {}".format(self.enemy.damage, self.hero.health)
 
     def message_move_enemy(self):
-        return "Enemy moves one square to the {} \
-        in order to get to the hero. This is his \
-        move.".format(self.give_moved_direction())
+        return "Enemy moves one square to the {} in order to get to the hero. This is his move.".format(self.give_moved_direction())
+
+    def message_use_weapon(self):
+        return "Hero hits with {} for {} dmg. Enemy health is {}".format(self.hero.weapon.name, self.hero.weapon.damage, self.enemy.health)
+
+    def message_dead(self, dead):
+        return "{} is dead!".format(dead)
+
+    def give_moved_direction(self):
+        if self.coords[0] > self.enemy_coords[0]:
+            return "up"
+        if self.coords[0] < self.enemy_coords[0]:
+            return "down"
+        if self.coords[1] > self.enemy_coords[1]:
+            return "right"
+        else:
+            return "left"
+
+    def move_enemy(self, direction):
+        if direction == "right":
+            self.enemy_coords[1] += 1
+            return
+        if direction == "left":
+            self.enemy_coords[1] -= 1
+            return
+        if direction == "up":
+            self.enemy_coords[0] -= 1
+            return
+        else:
+            self.enemy_coords[0] += 1
+            return
 
     def different_positions(self):
-        return self.find_coordinates('H') == self.find_coordinates('E')
-
-    def move_enemy(self):
-        print(self.find_coordinates('H'))
-        print(self.find_coordinates('E'))
+        return self.coords == self.enemy_coords
 
     def start_fight_by_spell(self):
-        # while self.hero.health > 0 or self.enemy.health > 0:
             while self.hero.curr_mana > 0:
-                self.hero.curr_mana -= self.hero.spell.mana_cost
-                # print(self.hero.damage)
                 self.enemy.health -= self.hero.damage
                 print(self.message_hero_cast())
                 if not self.different_positions():
-                    # print(message_move_enemy())
-                    self.move_enemy()
+                    print(self.message_move_enemy())
+                    self.move_enemy(self.give_moved_direction())
                 else:
                     self.hero.health -= self.enemy.damage
                     print(self.message_enemy_hit())
-
+                self.hero.curr_mana -= self.hero.spell.mana_cost
             print(self.message_no_more_mana())
             self.start_fight_by_weapon()
 
     def start_fight_by_weapon(self):
-        pass
+        while self.hero.health and self.enemy.health > 0:
+            self.enemy.health -= self.hero.weapon.damage
+            print(self.message_use_weapon())
+            self.hero.health -= self.enemy.damage
+            print(self.message_enemy_hit())
+        if self.hero.health == 0:
+            print(self.message_dead(self.hero.name))
+        if self.enemy.health == 0:
+            print(self.message_dead("Enemy"))
 
     def hero_attack(self, by="spell"):
         if self.hero.spell.damage >= self.hero.weapon.damage:
             if self.check_range_attack():
+                self.enemy = Enemy(100, 100, 20)
                 print(self.message_start_fight())
                 self.start_fight_by_spell()
-                # if Weapon.damage > Spell.damage:
-                #     Hero.damage = Weapon.damage
-                # Enemy.health -= Hero.damage
             else:
                 return "Nothing in casting range " + str(self.hero.spell.cast_range)
         else:
             self.start_fight_by_weapon()
 
     def check_range_attack(self):
-        dx = self.find_coordinates('H')[0]
-        dy = self.find_coordinates('H')[1]
-        new_positions = []
+        dy = self.coords[0]
+        dx = self.coords[1]
         cast_range = self.hero.spell.cast_range
         left_index = dx - cast_range
-        right_index = dx + cast_range + 1
+        right_index = dx + cast_range
         up_index = dy - cast_range
-        down_index = dy + cast_range + 1
+        down_index = dy + cast_range
+
         if left_index or up_index < 0:
             left_index, up_index = 0, 0
         if right_index >= len(self.map[dx][0]):
             right_index = len(self.map[dx][0]) - 1
         if down_index >= len(self.map):
             down_index = len(self.map) - 1
+
         for i in range(left_index, right_index):
-            new_positions.append(self.map[dx][0][i])
-        for i in range(up_index, down_index):
-            new_positions.append(self.map[i][0][dy])
-        if "E" in new_positions:
-            self.enemy = Enemy(100, 100, 20)
-            return True
+            for j in range(up_index, down_index):
+                if self.map[j][0][i] == "E":
+                    self.enemy_coords.append(j)
+                    self.enemy_coords.append(i)
+                    return True
         return False
 
 
@@ -233,17 +257,11 @@ def main():
     map = Dungeon("map.txt")
     map.open_map()
     map.spawn(h)
-    map.print_map()
     print(map.move_hero("right"))
-    print(map.move_hero("down"))
-    map.print_map()
-    # e = Enemy(100, 100, 20)
-    # print(map.hero_attack(by="spell"))
     print(map.move_hero("down"))
     print(map.move_hero("down"))
     map.print_map()
     print(map.hero_attack(by="spell"))
-
 
 if __name__ == '__main__':
     main()
