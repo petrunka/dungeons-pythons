@@ -64,33 +64,33 @@ class Fight:
     def start_fight_by_spell(self):
             while self.hero.get_mana() > 0:
                 self.enemy.get_health() -= self.hero.get_damage()
-                self.message_hero_cast()
+                print(self.message_hero_cast())
                 if not self.different_positions():
-                    self.message_move_enemy()
+                    print(self.message_move_enemy())
                     self.move_enemy(self.give_moved_direction())
                 else:
                     self.hero.get_health() -= self.enemy.get_damage()
-                    self.message_enemy_hit()
+                    print(self.message_enemy_hit())
                 self.hero.get_mana() -= self.hero.get_spell().get_mana_cost()
-            self.message_no_more_mana()
+            print(self.message_no_more_mana())
             self.start_fight_by_weapon()
 
     def start_fight_by_weapon(self):
         while self.hero.get_health() > 0 and self.enemy.get_health() > 0:
             self.enemy.get_health() -= self.hero.get_weapon().get_damage()
-            self.message_use_weapon()
+            print(self.message_use_weapon())
             self.hero.get_health() -= self.enemy.get_damage()
-            self.message_enemy_hit()
+            print(self.message_enemy_hit())
         if self.hero.get_health() == 0:
-            self.message_dead(self.hero.get_name())
+            print(self.message_dead(self.hero.get_name()))
         if self.enemy.get_health() == 0:
-            self.message_dead("Enemy")
+            print(self.message_dead("Enemy"))
 
     def hero_attack(self, by="spell"):
         if self.hero.get_spell().get_damage() >= self.hero.get_weapon().get_damage():
             if self.check_range_attack():
                 self.enemy = Enemy(100, 100, 20)
-                self.message_start_fight()
+                print(self.message_start_fight())
                 self.start_fight_by_spell()
             else:
                 return "Nothing in casting range " + str(self.hero.get_spell().get_cast_range())

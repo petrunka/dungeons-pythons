@@ -22,7 +22,7 @@ def main():
     fight = Fight(map, h)
     fight.hero_attack(by="spell")
     map.respawn()
-    map.get_map()
+    map.print_map()
 
 if __name__ == '__main__':
     main()

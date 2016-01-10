@@ -97,7 +97,7 @@ class Dungeon:
         if current_point == 'E':
             pass
         if current_point == 'T':
-            Treasures.pick_treasure()
+            print(Treasures.pick_treasure())
             return True
         if current_point == '#':
             return False
